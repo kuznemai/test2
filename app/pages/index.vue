@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { BreadcrumbItem } from "@nuxt/ui";
+
 const options = ["option1", "option2", "option3", "option4"];
-const items = ref([
+const items = ref<BreadcrumbItem[]>([
   {
     label: "Docs",
     icon: "i-lucide-book-open",
@@ -31,6 +33,9 @@ const value = ref(options[0]);
         <USelect v-model="value" :items="options" class="w-60" />
         <UButton label="Нажми меня" @click="console.log('clicked')" />
       </div>
+    </div>
+    <div>
+      <CatImage></CatImage>
     </div>
   </section>
 </template>

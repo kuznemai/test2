@@ -5,6 +5,24 @@ const items: BreadcrumbItem[] = [
   { label: "Магазин", icon: "i-lucide-store", to: "/shop" },
   { label: "Коты", icon: "i-lucide-cat" },
 ];
+const cats = [
+  {
+    slug: "cat1",
+    name: "Кот №1",
+    desc: "Несмотря на специфическую наружность, кот очень любвеобильный",
+  },
+  {
+    slug: "cat2",
+    name: "Кот №2",
+    desc: "Много ест, мало спит",
+  },
+  {
+    slug: "cat3",
+    name: "Кот №3",
+    desc: "Не уживается с комнатными растениями",
+  },
+];
+// TODO:Вынести Breadcrumb в layout
 </script>
 
 <template>
@@ -14,20 +32,13 @@ const items: BreadcrumbItem[] = [
     <UCard>
       <h2 class="text-xl font-bold mb-4">Наши коты</h2>
       <ul class="space-y-2">
-        <li>
-          <NuxtLink to="/shop/cats/cat1" class="text-primary hover:underline"
-            >Кот №1</NuxtLink
-          >
-        </li>
-        <li>
-          <NuxtLink to="/shop/cats/cat2" class="text-primary hover:underline"
-            >Кот №2</NuxtLink
-          >
-        </li>
-        <li>
-          <NuxtLink to="/shop/cats/cat3" class="text-primary hover:underline"
-            >Кот №3</NuxtLink
-          >
+        <li v-for="cat in cats" :key="cat.slug">
+          <NuxtLink :to="`/shop/cats/${cat.slug}`" class="block">
+            <UCard>
+              <h2 class="text-xl font-bold">{{ cat.name }}</h2>
+              <p class="mt-4">{{ cat.desc }}</p>
+            </UCard>
+          </NuxtLink>
         </li>
       </ul>
     </UCard>

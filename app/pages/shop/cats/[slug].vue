@@ -17,6 +17,9 @@ const items = computed<BreadcrumbItem[]>(() => [
   { label: "Коты", icon: "i-lucide-cat", to: "/shop/cats" },
   { label: cat.value?.name || "Неизвестный кот", icon: "i-lucide-paw" },
 ]);
+const quantity = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const numberofcats = ref(quantity[0]);
+// TODO:Вынести Breadcrumb в layout
 </script>
 
 <template>
@@ -26,9 +29,10 @@ const items = computed<BreadcrumbItem[]>(() => [
     <div v-if="cat">
       <UCard>
         <h2 class="text-xl font-bold">{{ cat.name }}</h2>
-        <NuxtImg :src="cat.img" :alt="cat.name" class="rounded-xl" />
+        <NuxtImg :src="cat.img" :alt="cat.name" class="rounded-xl m-3" />
         <p class="mt-4">Цена: {{ cat.price }}₽</p>
-        <UButton color="primary" class="mt-4">Купить</UButton>
+        <UButton color="primary" class="mt-4 mr-2">Купить</UButton>
+        <USelect v-model="numberofcats" :items="quantity"></USelect>
       </UCard>
     </div>
 

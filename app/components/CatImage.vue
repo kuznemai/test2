@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <section class="p-8">
+  <section>
     <NuxtImg
       src="../public/Кот.jpg"
       alt="Cat"

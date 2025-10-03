@@ -1,16 +1,5 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from "@nuxt/ui";
-
-const options = ["Белый", "Рыжий", "Серый", "Чёрный"];
-const items = ref<BreadcrumbItem[]>([
-  { label: "Магазин", icon: "i-lucide-store", to: "/shop" },
-  { label: "Коты", icon: "i-lucide-cat", to: "/shop/cats" },
-  { label: "Кот №1", icon: "i-lucide-paw" },
-]);
-const value = ref(options[1]);
-function buyCat() {
-  alert(`Вы купили кота цвета: ${value.value} `);
-}
 </script>
 
 <template>
@@ -23,19 +12,11 @@ function buyCat() {
       <CatImage />
 
       <UCard class="space-y-6">
-        <div class="space-y-4">
-          <UFormGroup label="Выберите цвет кота">
-            <USelect v-model="value" :items="options" class="w-60 m-3" />
-          </UFormGroup>
-
-          <UButton
-            icon="i-lucide-shopping-cart"
-            color="primary"
-            @click="buyCat"
-          >
-            Купить кота
-          </UButton>
-        </div>
+        <p>
+          Добро пожаловать в магазин котов! Если Вы ищете себе пушистого друга,
+          то это точно по адресу. Жмите вкладку "Магазин" чтобы быстрее
+          познакомиться с нашими пушистыми друзьми
+        </p>
       </UCard>
     </div>
   </section>

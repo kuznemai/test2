@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import type { BreadcrumbItem } from "@nuxt/ui";
+import { computed } from "vue";
+import type { Cat } from "~/types/cat";
 
-const cats = [
-  {
-    slug: "cat1",
-    name: "Кот №1",
-    desc: "Несмотря на специфическую наружность, кот очень любвеобильный",
-  },
-  {
-    slug: "cat2",
-    name: "Кот №2",
-    desc: "Много ест, мало спит",
-  },
-  {
-    slug: "cat3",
-    name: "Кот №3",
-    desc: "Не уживается с комнатными растениями",
-  },
-];
-// TODO:Вынести Breadcrumb в layout
+const {
+  data: cats,
+  pending,
+  error,
+} = await useFetch<Cat[]>("https://8f5b56ca183f4214.mokky.dev/catshoptesting");
+
+const catsWithSlug = computed<Cat[]>(() => {
+  if (!cats.value) return [];
+
+  return cats.value.map((cat) => ({
+    ...cat,
+    slug: cat.slug ?? `cat${cat.id}`,
+  }));
+});
 </script>
 
 <template>
@@ -27,12 +24,16 @@ const cats = [
 
     <UCard>
       <h2 class="text-xl font-bold mb-4">Наши коты</h2>
-      <ul class="space-y-2">
-        <li v-for="cat in cats" :key="cat.slug">
-          <NuxtLink :to="`/shop/cats/${cat.slug}`" class="block">
-            <UCard>
+
+      <p v-if="pending">Загружаем котов...</p>
+      <p v-else-if="error">Ошибка при загрузке котов</p>
+
+      <ul v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <li v-for="cat in catsWithSlug" :key="cat.id">
+          <NuxtLink :to="`/shop/cats/${cat.slug}`">
+            <UCard class="hover:shadow-lg transition">
               <h2 class="text-xl font-bold">{{ cat.name }}</h2>
-              <p class="mt-4">{{ cat.desc }}</p>
+              <p class="mt-4 text-sm opacity-80">{{ cat.desc }}</p>
             </UCard>
           </NuxtLink>
         </li>

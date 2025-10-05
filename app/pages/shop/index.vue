@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { BreadcrumbItem } from "@nuxt/ui";
 
 </script>
 

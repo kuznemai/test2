@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { BreadcrumbItem } from "@nuxt/ui";
-
 const route = useRoute();
 const slug = computed(() => route.params.slug as string);
 
@@ -12,11 +10,6 @@ const cats: Record<string, { name: string; img: string; price: number }> = {
 
 const cat = computed(() => cats[slug.value] || null);
 
-const items = computed<BreadcrumbItem[]>(() => [
-  { label: "Магазин", icon: "i-lucide-store", to: "/shop" },
-  { label: "Коты", icon: "i-lucide-cat", to: "/shop/cats" },
-  { label: cat.value?.name || "Неизвестный кот", icon: "i-lucide-paw" },
-]);
 const quantity = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const numberofcats = ref(quantity[0]);
 // TODO:Вынести Breadcrumb в layout
@@ -24,8 +17,7 @@ const numberofcats = ref(quantity[0]);
 
 <template>
   <section class="space-y-6">
-    <UBreadcrumb :items="items" />
-
+    <AppBreadcrumbs></AppBreadcrumbs>
     <div v-if="cat">
       <UCard>
         <h2 class="text-xl font-bold">{{ cat.name }}</h2>

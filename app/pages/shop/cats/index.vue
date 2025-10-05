@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from "@nuxt/ui";
 
-const items: BreadcrumbItem[] = [
-  { label: "Магазин", icon: "i-lucide-store", to: "/shop" },
-  { label: "Коты", icon: "i-lucide-cat" },
-];
 const cats = [
   {
     slug: "cat1",
@@ -27,7 +23,7 @@ const cats = [
 
 <template>
   <section class="space-y-6">
-    <UBreadcrumb :items="items" />
+    <AppBreadcrumbs />
 
     <UCard>
       <h2 class="text-xl font-bold mb-4">Наши коты</h2>

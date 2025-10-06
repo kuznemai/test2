@@ -15,8 +15,11 @@ const {
   `https://8f5b56ca183f4214.mokky.dev/catshoptesting/${catId}`,
 );
 
-const quantity = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const numberofcats = ref(quantity[0]);
+const quantityOptions = computed(() => {
+  const count = cat.value?.quantity ?? 0;
+  return Array.from({ length: count }, (_, i) => i + 1);
+});
+const numberofcats = ref(1);
 </script>
 
 <template>
@@ -60,7 +63,7 @@ const numberofcats = ref(quantity[0]);
         </p>
 
         <div class="flex gap-3 mt-4 items-center">
-          <USelect v-model="numberofcats" :items="quantity" />
+          <USelect v-model="numberofcats" :items="quantityOptions" />
           <UButton color="primary">Купить</UButton>
         </div>
       </UCard>

@@ -5,4 +5,5 @@ export interface Cat {
   desc: string;
   img?: string;
   price?: number;
+  quantity?: number;
 }

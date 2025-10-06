@@ -12,7 +12,7 @@ const home: BreadcrumbItem = {
 
 const mapLabels: Record<string, BreadcrumbItem> = {
   shop: { label: "Магазин", icon: "i-lucide-store", to: "/shop" },
-  cats: { label: "Наши коты", icon: "i-lucide-paw", to: "/shop/cats" },
+  cats: { label: "Наши коты", icon: "i-lucide-heart", to: "/shop/cats" },
 };
 
 const items = computed<BreadcrumbItem[]>(() => {
@@ -33,7 +33,7 @@ const items = computed<BreadcrumbItem[]>(() => {
 
   if (acc.length > 1) {
     const last = acc[acc.length - 1];
-    acc[acc.length - 1] = { label: last.label, icon: "i-lucide-paw" };
+    acc[acc.length - 1] = { label: last.label, icon: "i-lucide-heart" };
   }
 
   return acc;

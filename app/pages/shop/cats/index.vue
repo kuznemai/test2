@@ -3,40 +3,68 @@ import { ref, computed } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import type { Cat } from "~/types/cat";
 
-const {
-  data: allCats,
-  pending,
-  error,
-} = await useFetch<Cat[]>("https://8f5b56ca183f4214.mokky.dev/catshoptesting");
+interface ApiMeta {
+  total_items: number;
+  total_pages: number;
+  current_page: number;
+  per_page: number;
+  remaining_count: number;
+}
 
-const visibleCount = ref(6);
-const loadStep = 6;
-const isEnd = ref(false);
+interface ApiResponse {
+  meta: ApiMeta;
+  items: Cat[];
+}
+
+const cats = ref<Cat[]>([]);
+const page = ref(1);
+const perPage = 10;
+
+const isInitialLoading = ref(true);
 const isLoadingMore = ref(false);
+const isEnd = ref(false);
+const error = ref<Error | null>(null);
 
 const catsWithSlug = computed(() =>
-  (allCats.value ?? []).map((cat) => ({
+  cats.value.map((cat) => ({
     ...cat,
-    slug: cat.slug ?? `cat${cat.id}`,
+    slug: (cat as any).slug ?? `cat${cat.id}`,
   })),
 );
-const visibleCats = computed(() =>
-  catsWithSlug.value.slice(0, visibleCount.value),
-);
+
+async function fetchCats() {
+  try {
+    const res = await $fetch<ApiResponse>(
+      `https://8f5b56ca183f4214.mokky.dev/catshoptesting?limit=${perPage}&page=${page.value}`,
+    );
+
+    if (res?.items?.length) {
+      const newOnes = res.items.filter(
+        (item) => !cats.value.some((c) => c.id === item.id),
+      );
+      cats.value.push(...newOnes);
+
+      if (res.meta.current_page >= res.meta.total_pages) {
+        isEnd.value = true;
+      } else {
+        page.value += 1;
+      }
+    } else {
+      isEnd.value = true;
+    }
+  } catch (e: any) {
+    error.value = e;
+  } finally {
+    isInitialLoading.value = false;
+  }
+}
+
+await fetchCats();
 
 async function loadMore() {
   if (isLoadingMore.value || isEnd.value) return;
-
   isLoadingMore.value = true;
-
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
-  if (visibleCount.value < catsWithSlug.value.length) {
-    visibleCount.value += loadStep;
-  } else {
-    isEnd.value = true;
-  }
-
+  await fetchCats();
   isLoadingMore.value = false;
 }
 
@@ -50,11 +78,12 @@ useInfiniteScroll(window, loadMore, { distance: 300 });
     <UCard>
       <h2 class="text-xl font-bold mb-4">Наши коты</h2>
 
-      <p v-if="pending">Загружаем котов...</p>
-      <p v-else-if="error">Ошибка при загрузке котов</p>
+      <p v-if="error">Ошибка при загрузке котов: {{ error.message }}</p>
+
+      <p v-else-if="isInitialLoading">Загружаем котов...</p>
 
       <ul v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <li v-for="cat in visibleCats" :key="cat.id">
+        <li v-for="cat in catsWithSlug" :key="cat.id">
           <NuxtLink :to="`/shop/cats/${cat.slug}`">
             <UCard class="hover:shadow-lg transition">
               <h2 class="text-xl font-bold">{{ cat.name }}</h2>
@@ -68,7 +97,10 @@ useInfiniteScroll(window, loadMore, { distance: 300 });
         Загружаем ещё котов...
       </div>
 
-      <div v-if="isEnd" class="text-center py-4 text-gray-400">
+      <div
+        v-if="isEnd && !isInitialLoading"
+        class="text-center py-4 text-gray-400"
+      >
         Все коты загружены
       </div>
     </UCard>

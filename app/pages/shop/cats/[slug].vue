@@ -22,6 +22,14 @@ const numberofcats = ref(quantity[0]);
 <template>
   <section class="space-y-6">
     <AppBreadcrumbs />
+    <UButton
+      color="gray"
+      variant="soft"
+      icon="i-lucide-arrow-left"
+      to="/shop/cats"
+    >
+      Назад
+    </UButton>
 
     <UCard v-if="pending">Загружаем кота... </UCard>
 

@@ -2,7 +2,6 @@
 
 <template>
   <section class="p-8 space-y-8">
-    <AppBreadcrumbs class="hover:text-emerald-800 mt-5" />
     <h1 class="text-3xl font-bold">Купить кота</h1>
 
     <div class="grid md:grid-cols-2 gap-8 items-start">

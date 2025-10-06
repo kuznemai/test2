@@ -73,8 +73,6 @@ useInfiniteScroll(window, loadMore, { distance: 300 });
 
 <template>
   <section class="space-y-6">
-    <AppBreadcrumbs />
-
     <UCard>
       <h2 class="text-xl font-bold mb-4">Наши коты</h2>
 

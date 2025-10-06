@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRoute } from "#imports";
 import type { Cat } from "~/types/cat";
+import { useCartStore } from "~/stores/cart";
+const cart = useCartStore();
 
 const route = useRoute();
 const slug = route.params.slug as string;
@@ -20,11 +22,30 @@ const quantityOptions = computed(() => {
   return Array.from({ length: count }, (_, i) => i + 1);
 });
 const numberofcats = ref(1);
+
+const buyCat = async () => {
+  if (!cat.value) return;
+
+  const qty = numberofcats.value;
+  if (qty > (cat.value.quantity ?? 0)) {
+    alert("Столько котов нет в наличии!");
+    return;
+  }
+  cart.addToCart(cat.value, qty);
+
+  await $fetch(`https://8f5b56ca183f4214.mokky.dev/catshoptesting/${catId}`, {
+    method: "PATCH",
+    body: { quantity: cat.value.quantity - qty },
+  });
+
+  cat.value.quantity -= qty;
+
+  alert("Кот добавлен в корзину");
+};
 </script>
 
 <template>
   <section class="space-y-6">
-    <AppBreadcrumbs />
     <UButton
       color="gray"
       variant="soft"
@@ -64,7 +85,7 @@ const numberofcats = ref(1);
 
         <div class="flex gap-3 mt-4 items-center">
           <USelect v-model="numberofcats" :items="quantityOptions" />
-          <UButton color="primary">Купить</UButton>
+          <UButton color="primary" @click="buyCat"> Купить </UButton>
         </div>
       </UCard>
     </div>

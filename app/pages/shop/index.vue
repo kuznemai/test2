@@ -2,8 +2,6 @@
 
 <template>
   <section class="space-y-6">
-    <AppBreadcrumbs />
-
     <UCard>
       <h2 class="text-xl font-bold">Магазин котов</h2>
       <p class="mt-2">

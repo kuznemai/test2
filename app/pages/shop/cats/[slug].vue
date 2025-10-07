@@ -75,6 +75,10 @@ const buyCat = async () => {
           :src="cat.img"
           :alt="cat.name"
           class="rounded-xl m-3"
+          width="400"
+          height="400"
+          loading="lazy"
+          placeholder="blur"
         />
 
         <p class="mt-4">{{ cat.desc }}</p>

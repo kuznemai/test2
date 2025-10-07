@@ -9,6 +9,7 @@
       height="600"
       sizes="100vw md:1200px"
       format="webp"
+      loading="lazy"
       preload
     />
   </section>

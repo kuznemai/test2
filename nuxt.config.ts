@@ -10,6 +10,8 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   image: {
     dir: "public",
+    domains: ["8f5b56ca183f4214.mokky.dev"],
+    format: ["webp"],
   },
   routeRules: {
     "/**": { swr: 60 },

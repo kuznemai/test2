@@ -3,7 +3,7 @@
 <template>
   <section>
     <NuxtImg
-      src="/Кот.jpg"
+      src="/cats/MainKot.jpg"
       alt="Cat"
       width="1200"
       height="600"

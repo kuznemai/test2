@@ -16,4 +16,7 @@ export default defineNuxtConfig({
   routeRules: {
     "/**": { swr: 60 },
   },
+  experimental: {
+    payloadExtraction: true, //Это уменьшает размер JavaScript-бандла при SSR.
+  },
 });

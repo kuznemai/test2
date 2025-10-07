@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import type { Cat } from "~/types/cat";
 
@@ -10,7 +10,6 @@ interface ApiMeta {
   per_page: number;
   remaining_count: number;
 }
-
 interface ApiResponse {
   meta: ApiMeta;
   items: Cat[];
@@ -19,11 +18,10 @@ interface ApiResponse {
 const cats = ref<Cat[]>([]);
 const page = ref(1);
 const perPage = 10;
-
-const isInitialLoading = ref(true);
-const isLoadingMore = ref(false);
 const isEnd = ref(false);
 const error = ref<Error | null>(null);
+
+const isInitialLoading = ref(true);
 
 const catsWithSlug = computed(() =>
   cats.value.map((cat) => ({
@@ -32,41 +30,36 @@ const catsWithSlug = computed(() =>
   })),
 );
 
-async function fetchCats() {
-  try {
-    const res = await $fetch<ApiResponse>(
-      `https://8f5b56ca183f4214.mokky.dev/catshoptesting?limit=${perPage}&page=${page.value}`,
-    );
+const { data, pending } = useLazyFetch<ApiResponse>(
+  () =>
+    `https://8f5b56ca183f4214.mokky.dev/catshoptesting?limit=${perPage}&page=${page.value}`,
+  {
+    watch: [page],
+    server: false,
+    immediate: true,
+    transform: (res) => res.items,
+    onResponse({ response }) {
+      if (!response._data?.items?.length) isEnd.value = true;
+    },
+    onError(err) {
+      error.value = err as Error;
+    },
+  },
+);
 
-    if (res?.items?.length) {
-      const newOnes = res.items.filter(
-        (item) => !cats.value.some((c) => c.id === item.id),
-      );
-      cats.value.push(...newOnes);
+watch(data, (newCats) => {
+  if (!newCats?.length) return;
+  const uniqueCats = newCats.filter(
+    (item) => !cats.value.some((c) => c.id === item.id),
+  );
+  cats.value.push(...uniqueCats);
+  isInitialLoading.value = false;
+});
 
-      if (res.meta.current_page >= res.meta.total_pages) {
-        isEnd.value = true;
-      } else {
-        page.value += 1;
-      }
-    } else {
-      isEnd.value = true;
-    }
-  } catch (e: any) {
-    error.value = e;
-  } finally {
-    isInitialLoading.value = false;
-  }
-}
-
-await fetchCats();
-
-async function loadMore() {
-  if (isLoadingMore.value || isEnd.value) return;
-  isLoadingMore.value = true;
-  await fetchCats();
-  isLoadingMore.value = false;
-}
+const loadMore = async () => {
+  if (pending.value || isEnd.value) return;
+  page.value += 1;
+};
 
 useInfiniteScroll(window, loadMore, { distance: 300 });
 </script>
@@ -91,10 +84,12 @@ useInfiniteScroll(window, loadMore, { distance: 300 });
         </li>
       </ul>
 
-      <div v-if="isLoadingMore" class="text-center py-4 text-gray-500">
+      <div
+        v-if="pending && !isInitialLoading"
+        class="text-center py-4 text-gray-500"
+      >
         Загружаем ещё котов...
       </div>
-
       <div
         v-if="isEnd && !isInitialLoading"
         class="text-center py-4 text-gray-400"

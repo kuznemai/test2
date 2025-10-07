@@ -51,6 +51,7 @@ const buyCat = async () => {
       variant="soft"
       icon="i-lucide-arrow-left"
       to="/shop/cats"
+      prefetch
     >
       Назад
     </UButton>

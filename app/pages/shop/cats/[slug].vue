@@ -15,6 +15,10 @@ const {
   error,
 } = await useFetch<Cat>(
   `https://8f5b56ca183f4214.mokky.dev/catshoptesting/${catId}`,
+  {
+    key: `cat-${catId}`,
+    cache: "force-cache",
+  },
 );
 
 const quantityOptions = computed(() => {
